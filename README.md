@@ -17,6 +17,4 @@ Run `make`
 
 ## Running with Qemu
 
-~Mount the bootloader: `sudo mkdir /mnt/cyubosboot; mount -oloop=boot/boot.flp /mnt/cyubosboot`~
-
-Run with `qemu-system-x86_64 -fda boot/boot.flp`
+Run with `qemu-system-x86_64 -fda cyubos.flp`

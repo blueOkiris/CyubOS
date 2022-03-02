@@ -3,4 +3,9 @@ target/
 *.lock
 
 # Assembly Junk
+*.o
+*.bin
+
+# Build junk
+*.tmp
 *.flp
