@@ -1,0 +1,6 @@
+# Rust junk
+target/
+*.lock
+
+# Assembly Junk
+*.flp
