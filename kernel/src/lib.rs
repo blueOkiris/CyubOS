@@ -5,6 +5,7 @@
 
 #![no_std]
 #![feature(asm)]
+#![feature(panic_info_message)]
 
 mod kernel;
 mod panic;
