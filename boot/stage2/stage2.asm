@@ -60,15 +60,7 @@ start_64_bit:
     mov     ecx, 500
     rep     stosq
 
-    mov     rax, start_msg
-    mov     rbx, 0
-    call    print64
-
     call    kernel_start
-
-    mov     rax, done_msg
-    mov     rbx, 160 * 2
-    call    print64
 
     jmp     $
 

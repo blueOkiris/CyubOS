@@ -57,8 +57,7 @@ kernel.o: $(RUST_SRC)
 	cp kernel/target/x86_64-unknown-linux-gnu/release/libcyub_os_kernel.a $@
 
 kernel.bin: stage2.o kernel.o
-	ld -o kernel.tmp -Ttext 0x7E00 $^
-	objcopy -O binary kernel.tmp $@
+	ld -Tlink.ld
 
 ## Main targets
 $(OBJNAME): stage1.bin kernel.bin

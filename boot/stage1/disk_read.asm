@@ -3,12 +3,12 @@
 
 [bits 16]
 
-pgrm_space  equ 0x7E00
+pgrm_space  equ 0x8000
 
 read_disk:
     mov     ah, 0x02
     mov     bx, pgrm_space
-    mov     al, 4               ; We'll say 4 sectors rn (2048 bytes)
+    mov     al, 32              ; We'll say 32 sectors rn (16kB)
     mov     dl, [boot_disk]
     mov     ch, 0x00            ; cyllinder 0
     mov     dh, 0x00            ; head 0
