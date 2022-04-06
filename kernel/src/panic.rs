@@ -5,7 +5,7 @@
 
 use core::panic::PanicInfo;
 use crate::terminal::{
-    set_cursor_pos, print_str
+    set_cursor_pos, print_str, ForegroundColor, BackgroundColor
 };
 
 #[no_mangle]
@@ -14,8 +14,11 @@ fn panic(info: &PanicInfo) -> ! {
     set_cursor_pos(0, 0);
 
     match info.message() {
-        None => print_str("An unknown panic error occured :("),
-        Some(msg) => print_str(msg.as_str().unwrap())
+        None => print_str(
+            "An unknown panic error occured :(", ForegroundColor::White, BackgroundColor::Black
+        ), Some(msg) => print_str(
+            msg.as_str().unwrap(), ForegroundColor::White, BackgroundColor::Black
+        )
     }
 
     loop {
