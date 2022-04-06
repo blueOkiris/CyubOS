@@ -3,14 +3,15 @@
  * Description: Entry point for the Cyub OS kernel
  */
 
-use crate::text_print::{
-    Cursor, Terminal
+use crate::terminal::{
+    set_cursor_pos, print_str
 };
 
 #[no_mangle]
 pub extern "C" fn kernel_start() {
-    Cursor::set_pos(3, 4);
-    Terminal::print_str("Hello from rust kernel!\n");
-    Terminal::print_str("  Hello from rust kernel!\r");
-    Terminal::print_str("Goodbye\n");
+    set_cursor_pos(3, 4);
+    print_str("Hello from rust kernel!\n");
+    print_str("  Hello from rust kernel!\r");
+    print_str("Goodbye\n");
+    //print_str(35.to_string());
 }

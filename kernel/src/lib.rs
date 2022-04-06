@@ -9,5 +9,5 @@
 
 mod kernel;
 mod panic;
-mod text_print;
+mod terminal;
 mod io;
