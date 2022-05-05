@@ -3,14 +3,17 @@
  * Description: Entry point for the Cyub OS kernel
  */
 
-use core::ffi::c_void;
-use crate::terminal::{
-    set_cursor_pos, print_str, clear_screen,
-    ForegroundColor, BackgroundColor
+use crate::{
+    terminal::{
+        set_cursor_pos, print_str, clear_screen,
+        ForegroundColor, BackgroundColor
+    }, idt::idt_init
 };
 
 #[no_mangle]
 pub extern "C" fn kernel_start() {
+    idt_init();
+
     clear_screen(BackgroundColor::Black);
 
     print_all_colors();
@@ -56,5 +59,5 @@ fn print_all_colors() {
     print_str("A", ForegroundColor::LightRed, BackgroundColor::White);
     print_str("A", ForegroundColor::LightMagenta, BackgroundColor::White);
     print_str("A", ForegroundColor::Yellow, BackgroundColor::White);
-    print_str("A", ForegroundColor::White, BackgroundColor::White);
+    print_str("A", ForegroundColor::White, BackgroundColor::Black);
 }

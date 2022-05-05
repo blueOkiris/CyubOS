@@ -1,6 +1,6 @@
 /*
  * Author: Dylan Turner
- * Description: Handle text-mode printing
+ * Description: Handle text-mode printing. Used by all system modules
  */
 
 use crate::io::outb;
