@@ -12,8 +12,6 @@ use crate::{
 
 #[no_mangle]
 pub extern "C" fn kernel_start() {
-    idt_init();
-
     clear_screen(BackgroundColor::Black);
 
     print_all_colors();
@@ -22,6 +20,8 @@ pub extern "C" fn kernel_start() {
     print_str("Hello from rust kernel!\n", ForegroundColor::White, BackgroundColor::Black);
     print_str("  Hello from rust kernel!\r", ForegroundColor::LightGray, BackgroundColor::Green);
     print_str("Goodbye\n", ForegroundColor::Yellow, BackgroundColor::LightBlue);
+
+    idt_init();
 }
 
 fn print_all_colors() {

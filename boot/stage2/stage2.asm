@@ -10,6 +10,7 @@ _start:
 
 %include "print.asm"
 %include "gdt.asm"
+%include "idt.asm"
 %include "cpuid.asm"
 %include "simple_paging.asm"
 

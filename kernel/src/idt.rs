@@ -8,7 +8,7 @@ use crate::{
     io::{
         inb, outb
     }, terminal::{
-        print_str, ForegroundColor, BackgroundColor, set_cursor_pos
+        print_str, ForegroundColor, BackgroundColor, set_cursor_pos, print_u64
     }
 };
 
@@ -24,77 +24,55 @@ pub static mut IDT: [IdtGate64; 256] = [
         zero: 0
     }; 256
 ];
-static mut IDT_REG: IdtReg = IdtReg {
-    limit: 0,
-    base: 0
-};
+
+extern "C" {
+    fn isr1();
+    fn load_idt();
+}
 
 // Make sure for IDT stuff that structs are layed out w/out optimization
 #[derive(Clone, Copy)]
 #[repr(C)]
 pub struct IdtGate64 {
-    offset_low: u16,
-    selector: u16,
-    ist: u8,
-    types_attr: u8,
-    offset_mid: u16,
-    offset_high: u32,
-    zero: u32
-}
+    offset_low: u16, // 2b
+    selector: u16, // 2b
+    ist: u8, // 1b
+    types_attr: u8, // 1b
+    offset_mid: u16, // 2b
+    offset_high: u32, // 4b
+    zero: u32 // 4b
+} // Sum = 16 bytes
 
-#[repr(C)]
-struct IdtReg {
-    limit: u16,
-    base: u64
-}
-
-fn isr1() {
-    unsafe {
-        asm!("cli");
-    }
-
-    set_cursor_pos(0, 0);
-    print_str("Here!", ForegroundColor::White, BackgroundColor::Black);
-
-    let _key = inb(0x50);
+#[no_mangle]
+pub extern "C" fn isr1_handler() {
+    let _key = inb(0x60);
 
     outb(0x20, 0x20);
     outb(0xA0, 0x20);
-
-    unsafe {
-        asm!("iretq");
-    }
 }
 
 pub fn idt_init() {
+    let isr_ptr = isr1 as *const () as u64;
+    //print_u64(isr_ptr, ForegroundColor::White, BackgroundColor::Black);
+    //print_str("\n", ForegroundColor::White, BackgroundColor::Black);
     for table in 0..256 {
         unsafe {
-            let isr_ptr = isr1 as fn() as u64;
-            IDT[table].offset_low = ((isr_ptr as u64) & 0x000000000000FFFF) as u16;
-            IDT[table].offset_mid = (((isr_ptr as u64) & 0x00000000FFFF0000) >> 16) as u16;
-            IDT[table].offset_high = (((isr_ptr as u64) & 0xFFFFFFFF00000000) >> 32) as u32;
+            IDT[table].offset_low = (isr_ptr & 0x000000000000FFFF) as u16;
+            IDT[table].offset_mid = ((isr_ptr & 0x00000000FFFF0000) >> 16) as u16;
+            IDT[table].offset_high = ((isr_ptr & 0xFFFFFFFF00000000) >> 32) as u32;
+
+            // Probably not be needed
+            IDT[table].zero = 0;
+            IDT[table].ist = 0;
+            IDT[table].selector = 0x08;
+            IDT[table].types_attr = 0x8E;
         }
     }
 
     outb(0x21, 0xFD);
     outb(0xA1, 0xFF);
 
-    load_idt();
-}
-
-fn load_idt() {
     unsafe {
-        let idt_ptr: *const [IdtGate64; 256] = &IDT;
-        IDT_REG = IdtReg {
-            limit: 256 * 16 - 1,
-            base: idt_ptr as u64,
-        };
-        let idt_reg_ptr: *const IdtReg = &IDT_REG;
-
-        asm!(
-            "lidt [eax]
-            sti",
-            in("eax") idt_reg_ptr as u64
-        );
+        load_idt();
     }
 }
