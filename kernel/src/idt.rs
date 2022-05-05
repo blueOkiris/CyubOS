@@ -3,6 +3,7 @@
  * Description: Handle kernel interrupts
  */
 
+use core::arch::asm;
 use crate::{
     io::{
         inb, outb

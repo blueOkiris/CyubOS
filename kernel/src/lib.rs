@@ -4,7 +4,6 @@
  */
 
 #![no_std]
-#![feature(asm)]
 #![feature(panic_info_message)]
 #![allow(dead_code)] // Normally wouldn't, but bc of linking to ASM, there's lots of dead code
 

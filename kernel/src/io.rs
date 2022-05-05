@@ -3,6 +3,8 @@
  * Description: Handle io operations to the CPU
  */
 
+use core::arch::asm;
+
 pub fn outb(port: u16, val: u8) {
     unsafe {
         asm!(
