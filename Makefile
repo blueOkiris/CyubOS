@@ -8,9 +8,18 @@ AS :=				nasm
 
 ## Cargo build options
 RUSTC :=			cargo
+ifeq ($(DEBUG),)
 RUSTC_FLAGS :=		+nightly \
-					rustc --release --target=x86_64-unknown-linux-gnu \
+					rustc \
+					--release \
+					--target=x86_64-unknown-linux-gnu \
 					-- -C code-model=kernel -Z plt=y
+else
+RUSTC_FLAGS :=		+nightly \
+					rustc \
+					--target=x86_64-unknown-linux-gnu \
+					-- -C code-model=kernel -Z plt=y
+endif
 
 ## Stage 1 bootloader options
 STG1_SRC :=			$(wildcard boot/stage1/*.asm)
@@ -54,7 +63,11 @@ stage2.o: $(STG2_SRC)
 
 kernel.o: $(RUST_SRC)
 	cd kernel; cargo $(RUSTC_FLAGS)
+ifeq ($(DEBUG),)
 	cp kernel/target/x86_64-unknown-linux-gnu/release/libcyub_os_kernel.a $@
+else
+	cp kernel/target/x86_64-unknown-linux-gnu/debug/libcyub_os_kernel.a $@
+endif
 
 kernel.bin: stage2.o kernel.o
 	ld -Tlink.ld
